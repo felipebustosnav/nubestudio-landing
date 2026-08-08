@@ -1,0 +1,262 @@
+/* Always transparent — no border, no blur. Only the lettering changes. */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px var(--space-6);
+  background: transparent;
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard);
+}
+
+/* Above the sheet, which is a fixed layer inside this same stacking context. */
+.wordmark {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: color var(--dur-base) var(--ease-standard);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Buttons, not links: they scroll to a point inside a pinned scene rather
+   than navigating to a document of their own. */
+.link {
+  padding: 0;
+  font: inherit;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 6px;
+}
+
+.link:hover,
+.active {
+  color: var(--accent);
+}
+
+.inverse .wordmark {
+  color: var(--white);
+}
+
+.inverse .link {
+  color: var(--text-on-inverse);
+}
+
+/* blue-100 read as plain white over the dark scenes; blue-500 actually shows. */
+.inverse .link:hover,
+.inverse .active {
+  color: var(--blue-500);
+}
+
+/* Steps aside while the white declaration panel owns the screen. The lettering
+   is forced white with no colour transition, so it fades back in already white
+   over the cloud's black instead of flashing its previous colour. */
+.hidden {
+  opacity: 0;
+  transform: translateY(-16px);
+  pointer-events: none;
+}
+
+.hidden .wordmark,
+.hidden .link {
+  color: var(--white);
+  transition: none;
+}
+
+/* Hamburger and sheet ---------------------------------------------------- */
+
+/* Two hairlines, the same weight as the tour's leader line. Hidden above the
+   breakpoint, so the sheet can never be opened on a desktop. */
+.burger {
+  position: relative;
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px;
+  /* 44px of target, pulled back out to sit optically on the gutter. */
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.burger:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 2px;
+}
+
+.burgerLine {
+  width: 24px;
+  height: 1px;
+  background: var(--text-primary);
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    background-color var(--dur-base) var(--ease-standard);
+}
+
+.inverse .burgerLine {
+  background: var(--white);
+}
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-9) var(--space-6) var(--space-8);
+  padding-left: max(var(--space-6), env(safe-area-inset-left));
+  padding-right: max(var(--space-6), env(safe-area-inset-right));
+  background: var(--black);
+  opacity: 0;
+  visibility: hidden;
+  overscroll-behavior: contain;
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    visibility 0s linear var(--dur-base);
+}
+
+.sheetLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.sheetLink {
+  padding: 0;
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--white);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 520ms var(--ease-standard),
+    transform 520ms var(--ease-standard);
+}
+
+.sheetActive {
+  color: var(--blue-500);
+}
+
+.sheetMail {
+  align-self: flex-start;
+  padding-bottom: 4px;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-300);
+  text-decoration: none;
+  border-bottom: 1px solid oklch(1 0 0 / 0.28);
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 520ms var(--ease-standard),
+    transform 520ms var(--ease-standard);
+}
+
+.sheetLink:focus-visible,
+.sheetMail:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 6px;
+}
+
+/* Open ------------------------------------------------------------------- */
+
+/* After .inverse and .hidden on purpose: over the sheet's black the lettering
+   is white whatever the scene underneath was doing. */
+.open .wordmark {
+  color: var(--white);
+}
+
+.open .burgerLine {
+  background: var(--white);
+}
+
+/* Folds into a cross. 4px is half the 8px between the two centres. */
+.open .burgerLine:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.open .burgerLine:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+.open .sheet {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    visibility 0s;
+}
+
+.open .sheetLink,
+.open .sheetMail {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--delay, 0ms);
+}
+
+/* Mobile ----------------------------------------------------------------- */
+
+/* The page runs edge to edge under viewport-fit: cover, so the bar pads itself
+   back out of the notch and the rounded corners. */
+@media (max-width: 767px) {
+  .nav {
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-right: max(var(--space-5), env(safe-area-inset-right));
+    padding-bottom: 20px;
+    padding-left: max(var(--space-5), env(safe-area-inset-left));
+  }
+
+  /* The three destinations ask for ~350px of their own — they move to the sheet. */
+  .links {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+}

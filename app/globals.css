@@ -1,0 +1,39 @@
+@import '../styles/tokens/colors.css';
+@import '../styles/tokens/typography.css';
+@import '../styles/tokens/spacing.css';
+@import '../styles/tokens/effects.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  /* ScrollTrigger measures the document; smooth scrolling fights the scrub. */
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+}
+
+a {
+  color: inherit;
+}

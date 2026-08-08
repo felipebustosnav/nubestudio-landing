@@ -1,0 +1,29 @@
+:root{
+--black:oklch(0.16 0 0);
+--ink:oklch(0.22 0.002 260);
+--grey-900:oklch(0.28 0.002 260);
+--grey-700:oklch(0.42 0.003 260);
+--grey-500:oklch(0.58 0.004 260);
+--grey-300:oklch(0.78 0.004 260);
+--grey-200:oklch(0.87 0.003 260);
+--grey-100:oklch(0.93 0.002 260);
+--grey-50:oklch(0.97 0.001 260);
+--white:oklch(0.995 0 0);
+--blue-700:oklch(0.42 0.16 235);
+--blue-600:oklch(0.52 0.18 235);
+--blue-500:oklch(0.6 0.17 235);
+--blue-100:oklch(0.93 0.03 235);
+--surface-page:var(--white);
+--surface-sunken:var(--grey-50);
+--surface-inverse:var(--black);
+--text-primary:var(--black);
+--text-secondary:var(--grey-700);
+--text-tertiary:var(--grey-500);
+--text-on-inverse:var(--white);
+--text-on-inverse-secondary:var(--grey-300);
+--border-default:var(--grey-200);
+--border-strong:var(--grey-900);
+--accent:var(--blue-600);
+--accent-hover:var(--blue-700);
+--accent-soft:var(--blue-100);
+}

@@ -1,0 +1,76 @@
+/* Applied to <html> while loading, so nothing scrolls before the frames land. */
+.locked {
+  overflow: hidden;
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-7);
+  background: var(--black);
+  transition: opacity var(--dur-slow) var(--ease-standard);
+}
+
+.done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mark {
+  width: 132px;
+  height: 86px;
+  background: var(--white);
+  mask-image: url('/assets/brand/cloud.svg');
+  -webkit-mask-image: url('/assets/brand/cloud.svg');
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  animation: breathe 2600ms ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.track {
+  width: 240px;
+  height: 2px;
+  background: oklch(1 0 0 / 0.2);
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  width: 100%;
+  background: var(--blue-500);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.caption {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-500);
+}
+
+.percent {
+  color: var(--blue-500);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,436 @@
+.tour {
+  --hair: oklch(1 0 0 / 0.5);
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    oklch(0.1 0 0 / 0.5),
+    transparent 26%,
+    transparent 62%,
+    oklch(0.1 0 0 / 0.72)
+  );
+}
+
+/* Title ------------------------------------------------------------------ */
+
+.title {
+  position: absolute;
+  left: var(--space-6);
+  right: var(--space-6);
+  bottom: var(--space-8);
+  pointer-events: none;
+}
+
+.heading {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.lede {
+  max-width: 520px;
+  margin-top: var(--space-5);
+  font-size: var(--fs-body-lg);
+  color: var(--grey-200);
+}
+
+/* Stops ------------------------------------------------------------------ */
+
+.stop {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 520ms var(--ease-standard);
+}
+
+.stopActive {
+  opacity: 1;
+}
+
+.caption {
+  position: absolute;
+  left: var(--space-6);
+  bottom: var(--space-7);
+  max-width: 420px;
+}
+
+.captionLabel {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--blue-500);
+}
+
+.captionText {
+  margin-top: var(--space-3);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--white);
+}
+
+/* Annotations ------------------------------------------------------------ */
+
+.annotation {
+  position: absolute;
+}
+
+/* The clickable marker: dot and number on the anchor line, name in a bordered
+   pill below. The button box is just the dot-and-number row, so the ring's
+   centre lands exactly on the anchor — 8px in and 8px down, half the ring. */
+.point {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  font: inherit;
+  color: var(--white);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform-origin: 8px 8px;
+  transform: translate(-8px, -8px) scale(0.85);
+  transition:
+    opacity 380ms var(--ease-standard),
+    transform 480ms var(--ease-standard);
+}
+
+.stopActive .point {
+  opacity: 1;
+  transform: translate(-8px, -8px) scale(1);
+  transition-delay: var(--delay);
+  pointer-events: auto;
+}
+
+.point:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.ring {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--blue-500);
+  border-radius: 50%;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+
+/* See the note in Statement.module.css: a tap would leave the marker stuck
+   in its hover state. */
+@media (hover: hover) {
+  .point:hover .ring {
+    transform: scale(1.12);
+  }
+}
+
+.pip {
+  position: absolute;
+  inset: 0;
+  width: 7px;
+  height: 7px;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--blue-500);
+}
+
+.index {
+  font-size: var(--fs-caption);
+  line-height: 1;
+  letter-spacing: var(--tracking-caps);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 3px oklch(0.16 0 0 / 0.7);
+}
+
+/* The name of whatever the card holds. Sits under the dot and folds away
+   into it once the note is open. */
+.chip {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 50%;
+  padding: 5px var(--space-3);
+  white-space: nowrap;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  background: oklch(0.16 0 0 / 0.45);
+  border: 1px solid var(--blue-500);
+  border-radius: 999px;
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  transform: translateX(-50%);
+  transition:
+    opacity 260ms var(--ease-standard),
+    transform 420ms var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard);
+}
+
+@media (hover: hover) {
+  .point:hover .chip {
+    background: oklch(0.16 0 0 / 0.68);
+  }
+}
+
+.open .chip {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-8px) scale(0.88);
+}
+
+.hairline {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--len);
+  height: 1px;
+  background: var(--hair);
+  transform-origin: left center;
+  transform: rotate(var(--angle)) scaleX(0);
+  transition: transform 560ms var(--ease-standard);
+}
+
+.open .hairline {
+  transform: rotate(var(--angle)) scaleX(1);
+}
+
+.card {
+  position: absolute;
+  left: var(--dx);
+  top: var(--dy);
+  width: 200px;
+  padding: var(--space-4);
+  background: oklch(1 0 0 / 0.1);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  border: 1px solid oklch(1 0 0 / 0.22);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-100%, -50%) translateY(8px);
+  transition:
+    opacity 420ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+
+.open .card {
+  opacity: 1;
+  transform: translate(-100%, -50%) translateY(0);
+  transition-delay: 200ms;
+}
+
+.cardHead {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.cardIndex {
+  color: var(--blue-500);
+}
+
+.cardLabel {
+  color: var(--white);
+}
+
+.cardNote {
+  margin-top: var(--space-3);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--grey-200);
+}
+
+/* Read-out --------------------------------------------------------------- */
+
+.meta {
+  position: absolute;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-300);
+}
+
+.metaPercent {
+  color: var(--blue-500);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 2px;
+  background: oklch(1 0 0 / 0.24);
+}
+
+.bar {
+  height: 100%;
+  width: 0;
+  background: var(--blue-500);
+  box-shadow: 0 0 10px oklch(0.6 0.17 235 / 0.55);
+}
+
+.marks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 2px;
+}
+
+/* Centred on the 2px line: half the 12px dot minus 1px. */
+.mark {
+  position: absolute;
+  bottom: -5px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: oklch(0.16 0 0 / 0.8);
+  border: 1.5px solid oklch(1 0 0 / 0.55);
+  transition:
+    background-color var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard);
+}
+
+.markPassed {
+  background: var(--blue-500);
+  border-color: var(--blue-500);
+  transform: scale(1.2);
+}
+
+/* The note, moved into the band under the picture. Narrow screens only. */
+.sheet {
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  bottom: max(var(--space-6), calc(env(safe-area-inset-bottom) + var(--space-4)));
+  display: none;
+  padding: var(--space-4);
+  background: oklch(1 0 0 / 0.1);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  border: 1px solid oklch(1 0 0 / 0.22);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition:
+    opacity 380ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+
+/* Mobile ----------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* svh, not vh: vh tracks the collapsing URL bar, and the pin would jump
+     every time it came and went. */
+  .tour {
+    height: 100svh;
+  }
+
+  /* The 4:5 plate across the top — the same box tourPlate() paints into, so
+     the anchors land on the picture rather than on the screen. */
+  .stop {
+    inset: 0 auto auto 50%;
+    height: min(125vw, 62svh);
+    aspect-ratio: 4 / 5;
+    transform: translateX(-50%);
+  }
+
+  .title {
+    left: var(--space-5);
+    right: var(--space-5);
+    bottom: max(var(--space-7), calc(env(safe-area-inset-bottom) + var(--space-5)));
+  }
+
+  /* --fs-hero clamps to 72px here and «DE LAS NUBES» asks for the full 311px
+     of usable width. */
+  .heading {
+    font-size: 3.25rem;
+  }
+
+  .lede {
+    margin-top: var(--space-4);
+    font-size: var(--fs-body);
+  }
+
+  /* The stop's summary sits in the band, and steps aside for an open note. */
+  .caption {
+    left: var(--space-5);
+    right: var(--space-5);
+    bottom: auto;
+    top: calc(min(125vw, 62svh) + var(--space-5));
+    max-width: none;
+    transition: opacity var(--dur-base) var(--ease-standard);
+  }
+
+  .captionText {
+    font-size: var(--fs-body);
+  }
+
+  .noteOpen .caption {
+    opacity: 0;
+  }
+
+  .sheet {
+    display: block;
+  }
+
+  .noteOpen .sheet {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Anchored to its point, the card would start ~390px off the left edge. */
+  .card,
+  .hairline {
+    display: none;
+  }
+
+  /* Centred on its point, the longest label ran off the left edge at the
+     desktop padding. */
+  .chip {
+    padding: 5px var(--space-2);
+  }
+
+  /* The read-out and the scrub bar go: the scene reads on its own here. */
+  .meta,
+  .track,
+  .marks {
+    display: none;
+  }
+}

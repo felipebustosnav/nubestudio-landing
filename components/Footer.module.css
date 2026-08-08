@@ -1,0 +1,338 @@
+.footer {
+  position: relative;
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: var(--black);
+  isolation: isolate;
+}
+
+/* Graded to sit in the same world as the rest of the imagery: grey, quiet,
+   and dark enough that the type never fights it. No blur — the veil already
+   pushes it back, and blurring would erase the detail worth showing. */
+.video {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.08) brightness(0.5);
+  transform: scale(1.04);
+}
+
+/* Opaque at the top so the video emerges out of the black section above,
+   then heavier again at the bottom to ground the closing bar. */
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    var(--black) 0%,
+    oklch(0.16 0 0 / 0.62) 22%,
+    oklch(0.16 0 0 / 0.58) 58%,
+    oklch(0.16 0 0 / 0.9) 100%
+  );
+}
+
+.inner {
+  padding: var(--space-9) var(--space-6) var(--space-6);
+}
+
+/* Two blocks of equal typographic weight, so the distance between them reads
+   as composition rather than as two unrelated things. */
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-9);
+}
+
+.closing {
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+/* Contact ----------------------------------------------------------------- */
+
+/* Collapsed it is just the word. The panel is an absolutely positioned layer
+   that tracks the container, so it grows outward on every side without any
+   hard-coded height. */
+.contact {
+  position: relative;
+  display: inline-block;
+}
+
+.box {
+  position: absolute;
+  inset: -22px -26px;
+  border: 1px solid oklch(1 0 0 / 0.2);
+  border-radius: var(--radius-sm);
+  background: oklch(0.16 0 0 / 0.5);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  opacity: 0;
+  transform: scale(0.86);
+  pointer-events: none;
+  transition:
+    opacity 420ms var(--ease-standard),
+    transform 560ms var(--ease-standard),
+    border-color 420ms var(--ease-standard);
+}
+
+.contact:focus-within .box,
+.open .box {
+  opacity: 1;
+  transform: scale(1);
+  border-color: oklch(1 0 0 / 0.32);
+}
+
+.trigger {
+  position: relative;
+  display: block;
+  padding: 0 0 var(--space-3);
+  font: inherit;
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--white);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* The blue rule is the affordance: it says the word does something. */
+.trigger::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--blue-500);
+  transform-origin: left center;
+  transition: transform 480ms var(--ease-standard);
+}
+
+.contact:focus-within .trigger::after,
+.open .trigger::after {
+  transform: scaleX(1.06);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 8px;
+}
+
+/* 0fr → 1fr animates the height without anyone having to measure it. */
+.drawer {
+  position: relative;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 560ms var(--ease-standard);
+}
+
+.contact:focus-within .drawer,
+.open .drawer {
+  grid-template-rows: 1fr;
+}
+
+.drawerInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  font-size: var(--fs-small);
+  font-style: normal;
+  color: var(--grey-300);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 320ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+
+.contact:focus-within .details,
+.open .details {
+  opacity: 1;
+  transform: none;
+  transition-delay: 180ms;
+}
+
+/* Hover only where a pointer actually hovers. On touch the tap both toggles
+   `open` and leaves a sticky :hover behind, so the panel could never be shut
+   again — the button click is the whole interaction there. */
+@media (hover: hover) {
+  .contact:hover .box {
+    opacity: 1;
+    transform: scale(1);
+    border-color: oklch(1 0 0 / 0.32);
+  }
+
+  .contact:hover .trigger::after {
+    transform: scaleX(1.06);
+  }
+
+  .contact:hover .drawer {
+    grid-template-rows: 1fr;
+  }
+
+  .contact:hover .details {
+    opacity: 1;
+    transform: none;
+    transition-delay: 180ms;
+  }
+}
+
+.email {
+  font-size: var(--fs-body-lg);
+  color: var(--white);
+  text-decoration: none;
+  border-bottom: 1px solid oklch(1 0 0 / 0.28);
+  padding-bottom: 2px;
+  transition:
+    color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard);
+}
+
+.email:hover {
+  color: var(--blue-500);
+  border-color: var(--blue-500);
+}
+
+.phone {
+  color: var(--grey-300);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.phone:hover {
+  color: var(--white);
+}
+
+.place {
+  color: var(--grey-500);
+}
+
+/* Closing bar -------------------------------------------------------------- */
+
+.rule {
+  height: 1px;
+  margin: var(--space-8) 0 var(--space-5);
+  background: oklch(1 0 0 / 0.18);
+}
+
+.bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-500);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: var(--tracking-caps);
+  color: var(--white);
+}
+
+.toTop {
+  padding: 0;
+  font: inherit;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.toTop:hover {
+  color: var(--blue-500);
+}
+
+.toTop:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 6px;
+}
+
+/* Entrance ---------------------------------------------------------------- */
+
+/* One staggered wave for the whole block, so nothing reads as a stray element
+   that happens to sit nearby. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 720ms var(--ease-standard),
+    transform 720ms var(--ease-standard);
+}
+
+.revealed .reveal {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--delay, 0ms);
+}
+
+@media (max-width: 900px) {
+  .top {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 767px) {
+  .inner {
+    padding: var(--space-8) var(--space-5);
+    padding-bottom: max(var(--space-5), calc(env(safe-area-inset-bottom) + var(--space-4)));
+  }
+
+  /* The panel grows outward from the word; at this width its left edge would
+     otherwise sit off the screen. */
+  .box {
+    inset: -18px -16px;
+  }
+
+  .rule {
+    margin: var(--space-7) 0 var(--space-5);
+  }
+
+  /* Three items in a row do not fit in 311px. The wordmark and the control
+     keep the row; the descriptor drops to a line of its own. */
+  .bottom {
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .role {
+    order: 3;
+    flex-basis: 100%;
+  }
+}

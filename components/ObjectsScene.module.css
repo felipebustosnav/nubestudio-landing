@@ -1,0 +1,104 @@
+.objects {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--black);
+}
+
+/* Inside the statement it shares the pinned screen instead of making its own. */
+.embedded {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.kicker {
+  position: absolute;
+  top: 96px;
+  left: var(--space-6);
+  z-index: 3;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--blue-500);
+}
+
+.image {
+  position: absolute;
+  left: var(--x);
+  top: 50%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* Full-frame plates, not cut-outs: the photograph's own edge is the frame. */
+.image img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(1) contrast(1.05);
+}
+
+.text {
+  position: absolute;
+  left: var(--x);
+  top: 50%;
+  width: 34%;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.note {
+  max-width: 380px;
+  margin-top: var(--space-5);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--grey-300);
+  text-wrap: pretty;
+}
+
+/* Mobile ----------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Only applies when the sequence runs on its own pin; embedded it inherits
+     the statement's box. */
+  .objects {
+    height: 100svh;
+  }
+
+  .kicker {
+    top: max(88px, calc(env(safe-area-inset-top) + 68px));
+    left: var(--space-5);
+  }
+
+  /* One column: plate over words, both centred, travelling together. */
+  .image,
+  .text {
+    left: 50%;
+  }
+
+  .text {
+    width: 78%;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .note {
+    margin-top: var(--space-4);
+    font-size: var(--fs-body);
+  }
+}

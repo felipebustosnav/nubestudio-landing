@@ -1,0 +1,14 @@
+node_modules/
+
+# .next, .next-verify, .next-dev2 — every build dir, present and future
+.next*/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Never commit environment files of any flavour
+.env*
+
+.DS_Store
+Thumbs.db

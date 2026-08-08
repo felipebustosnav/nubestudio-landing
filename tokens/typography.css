@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=League+Gothic&display=swap');
+:root{
+--font-display:'League Gothic',Impact,'Arial Narrow',sans-serif;
+--font-sans:'Sora',-apple-system,BlinkMacSystemFont,sans-serif;
+--tracking-display:0.01em;
+--tracking-caps:0.14em;
+--tracking-tight:-0.01em;
+--lh-display:0.92; /* @kind other */
+--lh-heading:1.08; /* @kind other */
+--lh-body:1.6; /* @kind other */
+--lh-caption:1.4; /* @kind other */
+--fs-hero:clamp(4.5rem,10vw,10rem); /* @kind font */
+--fs-h1:clamp(2.75rem,6vw,5.5rem); /* @kind font */
+--fs-h2:clamp(2rem,3.5vw,3rem); /* @kind font */
+--fs-h3:1.5rem; /* @kind font */
+--fs-body-lg:1.25rem; /* @kind font */
+--fs-body:1rem; /* @kind font */
+--fs-small:0.875rem; /* @kind font */
+--fs-caption:0.75rem; /* @kind font */
+}

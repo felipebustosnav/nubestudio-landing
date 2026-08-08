@@ -1,0 +1,342 @@
+/* Rides up over the pinned tour — the negative margin pulls it into the tour's
+   pin spacer — then pins itself the instant its bottom edge meets the viewport
+   bottom, so the cloud can open inside a still frame. */
+.statement {
+  position: relative;
+  z-index: 2;
+  margin-top: -100vh;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* Declaration ------------------------------------------------------------ */
+
+.copy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-9) var(--space-6);
+  padding-bottom: 38vh;
+}
+
+.copyInner {
+  max-width: 760px;
+  text-align: center;
+}
+
+.kicker {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--blue-500);
+}
+
+.headline {
+  margin-top: var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--black);
+  text-wrap: pretty;
+}
+
+.lede {
+  max-width: 460px;
+  margin: var(--space-6) auto 0;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+/* Propulsion trail ------------------------------------------------------- */
+
+.puff {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Cloud zoom ------------------------------------------------------------- */
+
+/* Backing black, so the mask's open swirls never flash white through. */
+.solid {
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  opacity: 0;
+}
+
+.mask {
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  mask-image: url('/assets/brand/cloud.svg');
+  -webkit-mask-image: url('/assets/brand/cloud.svg');
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  will-change: mask-position, mask-size, transform;
+}
+
+/* Narrow-screen zoom. The mask is a fixed size here and the layer grows by
+   transform alone, which the compositor handles — animating mask-size on a
+   full-screen layer is a repaint every tick and is what makes a phone stutter.
+   Inert above the breakpoint. */
+.zoom {
+  --cloud-w: 320px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  width: var(--cloud-w);
+  height: calc(var(--cloud-w) / 1.537);
+  /* Pulled back by half, so a plain translate puts its centre on the mark. */
+  margin-left: calc(var(--cloud-w) / -2);
+  margin-top: calc(var(--cloud-w) / -3.074);
+  background: var(--black);
+  mask-image: url('/assets/brand/cloud.svg');
+  -webkit-mask-image: url('/assets/brand/cloud.svg');
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.objectsLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* Project grid ----------------------------------------------------------- */
+
+.grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  padding-top: 96px;
+  perspective: 1800px;
+  perspective-origin: 50% 50%;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--grey-900);
+  cursor: pointer;
+  opacity: 0;
+  transform-style: preserve-3d;
+}
+
+.panelImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.04);
+  transition:
+    filter 620ms var(--ease-standard),
+    transform 900ms var(--ease-standard);
+}
+
+.panelLabel {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 420ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+
+.panelTitle {
+  color: var(--white);
+}
+
+.panelPlace {
+  margin-left: var(--space-3);
+  color: var(--blue-500);
+}
+
+.panelMeta {
+  color: var(--grey-300);
+}
+
+.wire {
+  position: absolute;
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+  stroke: var(--white);
+  stroke-width: 0.7;
+  transition:
+    opacity 380ms var(--ease-standard),
+    clip-path 760ms var(--ease-standard);
+}
+
+/* Hover only where a pointer actually hovers. A tap on a touch screen leaves
+   :hover behind, and the card would sit dimmed and zoomed for good. */
+@media (hover: hover) {
+  .panel:hover .panelImage {
+    filter: grayscale(1) contrast(1.04) brightness(0.6);
+    transform: scale(1.04);
+  }
+
+  .panel:hover .panelLabel {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .panel:hover .wire {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Narrow-screen doors. An 82° swing needs a stage far wider than a phone to
+   read as a wall turning, so there the halves simply part down the middle and
+   the black opens through. Inert above the breakpoint. */
+.doors {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background: var(--black);
+  clip-path: inset(0 50% 0 50%);
+  pointer-events: none;
+}
+
+/* Scroll hint ------------------------------------------------------------ */
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-5);
+  text-align: center;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--grey-500);
+  pointer-events: none;
+}
+
+/* Mobile ----------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Both switch together: riding up over the tour's pin depends on the
+     negative margin matching the tour's height exactly. */
+  .statement {
+    height: 100svh;
+    margin-top: -100svh;
+  }
+
+  /* 38vh of bottom padding left the block floating with an empty third
+     under it on a tall screen. */
+  .copy {
+    padding: var(--space-8) var(--space-5);
+    padding-bottom: 10svh;
+  }
+
+  .headline {
+    margin-top: var(--space-5);
+    font-size: 2.25rem;
+  }
+
+  .lede {
+    margin-top: var(--space-5);
+    font-size: var(--fs-body);
+  }
+
+  /* The animated mask goes; the panel is plain black and the .zoom layer
+     above does the reveal. */
+  .mask {
+    mask-image: none;
+    -webkit-mask-image: none;
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .zoom {
+    display: block;
+  }
+
+  /* One cell with the four cards stacked in it, shown in turn — the four-column
+     grid gave 60px-wide slivers here. */
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    gap: 0;
+    padding: var(--space-5);
+    padding-top: max(96px, calc(env(safe-area-inset-top) + 76px));
+    padding-bottom: max(var(--space-7), calc(env(safe-area-inset-bottom) + var(--space-6)));
+    perspective: none;
+  }
+
+  .panel {
+    grid-area: 1 / 1;
+    align-self: center;
+    width: 100%;
+    max-height: 100%;
+    aspect-ratio: 5 / 7;
+  }
+
+  /* There is no hover on touch and the label is what names the project, so it
+     stays up full-time — over a scrim of its own, since the photo underneath
+     is no longer dimmed by a hover state. */
+  .panel::after {
+    content: '';
+    position: absolute;
+    inset: 45% 0 0;
+    z-index: 1;
+    background: linear-gradient(to bottom, transparent, oklch(0.16 0 0 / 0.82));
+    pointer-events: none;
+  }
+
+  .panelLabel {
+    z-index: 2;
+    font-size: var(--fs-small);
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The titles run to two lines at this width, and the city trailing the last
+     word of a wrapped title reads as part of it. */
+  .panelPlace {
+    display: block;
+    margin-left: 0;
+    margin-top: var(--space-1);
+  }
+
+  /* Kept but quiet: on desktop it only ever shows over a dimmed photo. */
+  .wire {
+    opacity: 0.45;
+    clip-path: inset(0);
+  }
+
+  .doors {
+    display: block;
+  }
+}
